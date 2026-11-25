@@ -1,0 +1,6 @@
+{
+  "name": "senda-asesores",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "node server.js" }
+}
