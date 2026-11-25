@@ -279,10 +279,19 @@ dialog::backdrop { background: #161c3ba6; }
   @keyframes page-title-in { from { clip-path: inset(0 0 80%); transform: translateY(9px); } to { clip-path: inset(0); transform: none; } }
 }
 @media (max-width:590px) {
-  .has-selection .brand-rail { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 7px; }
-  .has-selection .provider-card[aria-expanded=true] { grid-column: 1/-1; }
-  .has-selection .provider-card[aria-expanded=false] { width: 100%; height: 58px; padding: 6px; }
   .company-plans-header { min-height: 100px; }
+}
+.provider-picker { display: none; }
+@media (max-width: 767px) {
+  .catalog-layout .brand-rail { display: none; }
+  .catalog-layout.has-selection { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .provider-picker { display: grid; gap: 6px; }
+  .provider-picker label { font-weight: 600; }
+  .provider-picker select {
+    width: 100%; min-height: 48px; padding: 8px 12px;
+    font: inherit; font-size: 16px; color: var(--ink); background: var(--paper);
+    border: 1px solid currentColor; border-radius: 8px;
+  }
 }
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }

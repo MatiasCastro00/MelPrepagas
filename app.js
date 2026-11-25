@@ -55,9 +55,32 @@
   rail.setAttribute('aria-label', 'Prepagas');
   plansPanel.before(rail);
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const compactCatalog = matchMedia('(max-width: 767px)');
+  const picker = element('div', '', 'provider-picker');
+  const label = element('label', 'Prepaga');
+  label.htmlFor = 'catalog-provider';
+  const select = element('select');
+  select.id = label.htmlFor;
+  select.setAttribute('aria-controls', plansPanel.id);
+  select.add(new Option('Elegí una prepaga', ''));
+  providers.forEach(provider => select.add(new Option(provider.name, provider.id)));
+  select.onchange = () => {
+    if (!select.value) {
+      if (activeCard) closePlans(false);
+      return;
+    }
+    const index = select.selectedIndex - 1;
+    showPlans(providers[index], rail.children[index], false);
+  };
+  picker.append(label, select);
+  rail.before(picker);
   let activeCard = null;
 
   function moveBrands(change, animate) {
+    if (compactCatalog.matches) {
+      change();
+      return;
+    }
     const cards = [...rail.children];
     const before = cards.map(card => card.getBoundingClientRect());
     cards.forEach(card => card.getAnimations().forEach(animation => animation.cancel()));
@@ -80,7 +103,8 @@
       plansPanel.hidden = true;
       activeCard.setAttribute('aria-expanded', 'false');
       catalog.classList.remove('has-selection');
-      activeCard.focus({ preventScroll: true });
+      select.value = '';
+      (compactCatalog.matches ? select : activeCard).focus();
       activeCard = null;
     }, animate);
   }
@@ -94,6 +118,7 @@
     moveBrands(() => {
       activeCard?.setAttribute('aria-expanded', 'false');
       activeCard = card;
+      select.value = provider.id;
       card.setAttribute('aria-expanded', 'true');
       catalog.classList.add('has-selection');
       plansPanel.dataset.tone = provider.tone;
@@ -118,6 +143,7 @@
 
       plansPanel.hidden = false;
     }, animate);
+    if (compactCatalog.matches) return;
     const heading = plansPanel.querySelector('h3');
     heading.focus({ preventScroll: true });
     const top = heading.getBoundingClientRect().top;
